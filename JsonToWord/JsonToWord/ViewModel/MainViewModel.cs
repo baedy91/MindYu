@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using JsonToWord.Model;
+using Microsoft.Practices.ServiceLocation;
 
 namespace JsonToWord.ViewModel
 {
@@ -11,7 +12,6 @@ namespace JsonToWord.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private readonly IDataService _dataService;
 
         /// <summary>
         /// The <see cref="WelcomeTitle" /> property's name.
@@ -29,8 +29,33 @@ namespace JsonToWord.ViewModel
         /// </summary>
         public MainViewModel()
         {
-          
+            ////if (IsInDesignMode)
+            ////{
+            ////    // Code runs in Blend --> create design time data.
+            ////}
+            ////else
+            ////{
+            ////    // Code runs "for real"
+            ////}
+
+         //   CurrentViewModel = ServiceLocator.Current.GetInstance<WordManageViewModel>();
+
         }
+        #region currentViewModel
+        private ViewModelBase _currentViewModel;
+
+        public ViewModelBase CurrentViewModel
+        {
+            get
+            {
+                return _currentViewModel;
+            }
+            set
+            {
+                Set("CurrentViewModel", ref _currentViewModel, value);
+            }
+        }
+        #endregion
 
         ////public override void Cleanup()
         ////{
