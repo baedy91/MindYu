@@ -10,11 +10,17 @@ namespace JsonToWord.Model
 {
     public class WordListModel : INotifyPropertyChanged
     {
+        public WordListModel(StrWrapper word, ObservableCollection<RelationWordModel> list)
+        {
+            Word = word;
+            _list = list;
+        }
+
         #region property
-        private String _word;
+        private StrWrapper _word;
         private ObservableCollection<RelationWordModel> _list;
 
-        public string Word
+        public StrWrapper Word
         {
             get { return _word; }
             set

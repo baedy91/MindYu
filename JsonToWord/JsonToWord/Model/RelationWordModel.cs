@@ -10,16 +10,16 @@ namespace JsonToWord.Model
 {
     public class RelationWordModel : INotifyPropertyChanged
     {
-        private String _word;
+        private String _relationWord = "";
         private int _count = 1;
 
-        public String Word
+        public String RelationWord 
         {
-            get { return _word; }
+            get { return _relationWord; }
             set
             {
-                _word = value;
-                OnPropertyChanged("word");
+                _relationWord = value;
+                OnPropertyChanged("RelationWord");
             }
         }
 
