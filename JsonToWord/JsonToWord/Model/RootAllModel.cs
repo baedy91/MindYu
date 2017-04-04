@@ -26,6 +26,10 @@ namespace JsonToWord.Model
         }
         #endregion
 
+        public RootAllModel(ObservableCollection<WordListModel> inputdata)
+        {
+            Root = inputdata;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)

@@ -12,17 +12,11 @@ namespace JsonToWord.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-
-        /// <summary>
-        /// The <see cref="WelcomeTitle" /> property's name.
-        /// </summary>
-      
-
         /// <summary>
         /// Gets the WelcomeTitle property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        
+
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -39,22 +33,37 @@ namespace JsonToWord.ViewModel
             ////}
 
          //   CurrentViewModel = ServiceLocator.Current.GetInstance<WordManageViewModel>();
-
+            ContentsListVM = ServiceLocator.Current.GetInstance<ContentsListViewModel>();
+            RelationListVM = ServiceLocator.Current.GetInstance<RelationListViewModel>();
+          //  _ContentsListVM = new ContentsListViewModel();
+          //  _relationListVM = new RelationListViewModel();
         }
         #region currentViewModel
-        private ViewModelBase _currentViewModel;
-
-        public ViewModelBase CurrentViewModel
+        private ViewModelBase _ContentsListVM;
+        public ViewModelBase ContentsListVM
         {
             get
             {
-                return _currentViewModel;
+                return _ContentsListVM;
             }
             set
             {
-                Set("CurrentViewModel", ref _currentViewModel, value);
+                Set("ContentsListVM", ref _ContentsListVM, value);
             }
         }
+        private ViewModelBase _relationListVM;
+        public ViewModelBase RelationListVM
+        {
+            get
+            {
+                return _relationListVM;
+            }
+            set
+            {
+                Set("RelationListVM", ref _relationListVM, value);
+            }
+        }
+
         #endregion
 
         ////public override void Cleanup()

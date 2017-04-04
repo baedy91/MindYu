@@ -2,8 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:JsonToWord.ViewModel"
+             xmlns:view ="clr-namespace:JsonToWord.View"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             
              StartupUri="MainWindow.xaml"
              mc:Ignorable="d">
     
@@ -11,6 +13,14 @@
         <!--Global View Model Locator-->
         <vm:ViewModelLocator x:Key="Locator"
                              d:IsDataSource="True" />
+        
+        <DataTemplate DataType="{x:Type vm:ContentsListViewModel}">
+            <view:ContentsListView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:RelationListViewModel}">
+            <view:RelationListView/>
+        </DataTemplate>
+        
     </Application.Resources>
     
 </Application>

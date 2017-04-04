@@ -25,10 +25,12 @@ namespace JsonToWord.ViewModel
     /// </summary>
     public class ViewModelLocator
     {
-        static ViewModelLocator()
+        public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<RelationListViewModel>();
+            SimpleIoc.Default.Register<ContentsListViewModel>();
         }
 
         /// <summary>
@@ -44,6 +46,23 @@ namespace JsonToWord.ViewModel
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
+        public RelationListViewModel RelationList
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<RelationListViewModel>();
+            }
+        }
+        public ContentsListViewModel ContentsList
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ContentsListViewModel>();
+            }
+        }
+
+
+
 
         /// <summary>
         /// Cleans up all the resources.
