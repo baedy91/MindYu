@@ -148,9 +148,10 @@ namespace JsonToWord.ViewModel
             msg.Execute(RootAll);
         }
 
-        private void NewContents()
+        private void NewContents(NotificationMessageAction<RootAllModel> noti)
         {
-
+            dataService.NewContentsList(RootAll);
+            noti.Execute(RootAll);
         }
 
         private void RemoveContents()
@@ -171,12 +172,11 @@ namespace JsonToWord.ViewModel
             ContentsListSelected.SelectedItem = RootAll.Root[0].Word;
             VisiableList = dataService.GetRelaionWord(RootAll, dataService.GetContents(RootAll).ContentsList[0].StrData);
 
-            MessageBox.Show(VisiableList.List[0].RelationWord);
             //Messenger
             MessengerInstance.Register<PropertyChangedMessage<SelectedItemModel>>(this, "selectedInit", (x) => { ContentsListSelected = x.NewValue; });
             MessengerInstance.Register<SelectedItemModel>(this, "SelectedEvent", SelectedEvent);
             MessengerInstance.Register<UpdateMsg>(this, UpdateEvent);
-
+            MessengerInstance.Register<NotificationMessageAction<RootAllModel>>(this, "NewContent", NewContents);
 
 
             //Command

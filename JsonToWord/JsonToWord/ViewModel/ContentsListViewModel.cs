@@ -111,12 +111,12 @@ namespace JsonToWord.ViewModel
         }
         private void UpdateListEvent(ContentsListModel clm)
         {
-            UpdateMsg msg = new UpdateMsg("update", UpdateCallback);
+            UpdateMsg msg = new UpdateMsg("update", RootUpdateCallback);
             msg.index = SelectedIndex.IntData;
             msg.oldData = OldCurrentList[SelectedIndex.IntData];
             msg.updateData = clm.ContentsList[msg.index].StrData;
             
-            MessageBox.Show( clm.ContentsList[0].StrData + "  " + _rootAll.Root[0].Word.StrData);
+          //  MessageBox.Show( clm.ContentsList[0].StrData + "  " + _rootAll.Root[0].Word.StrData);
             if (clm.ContentsList[msg.index].StrData == _rootAll.Root[msg.index].Word.StrData) // 수정값이 없다면
             {
                 ConList = dataService.GetContents(_rootAll);
@@ -145,11 +145,13 @@ namespace JsonToWord.ViewModel
                 NowStatusNCL = true;
             }
 
+
+            SelectedIndex = new IntWrapper(msg.index);
        //     ConList = dataservice.GetContents(_rootAll);    //갱신            
 
           //  Messenger.Default.Send
         }
-        private void UpdateCallback(RootAllModel root)
+        private void RootUpdateCallback(RootAllModel root)
         {
             ConList = dataService.GetContents(root);
             OldCurrentList = CurrentListChange(root);
@@ -159,10 +161,13 @@ namespace JsonToWord.ViewModel
         {
             if (NowStatusNCL)
             {
+                /*
                 WordListModel newContent = new WordListModel(new StrWrapper("새항목"), new ObservableCollection<RelationWordModel>());
-
                 _rootAll.Root.Add(newContent);  // messenger 새로운 항목 추가하고 피드백 받아   
-                SetConList(_rootAll);
+                */
+                MessengerInstance.Send<NotificationMessageAction<RootAllModel>>
+                    (new NotificationMessageAction<RootAllModel>("NewContent", RootUpdateCallback), "NewContent");
+
                 NowStatusNCL = false;
             }
             else
