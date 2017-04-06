@@ -32,13 +32,7 @@ namespace JsonToWord.ViewModel
             SimpleIoc.Default.Register<RelationListViewModel>();
             SimpleIoc.Default.Register<ContentsListViewModel>();
         }
-
-        /// <summary>
-        /// Gets the Main property.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
-            "CA1822:MarkMembersAsStatic",
-            Justification = "This non-static member is needed for data binding purposes.")]
+              
         public MainViewModel Main
         {
             get

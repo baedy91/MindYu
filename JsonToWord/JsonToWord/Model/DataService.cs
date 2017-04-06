@@ -73,7 +73,7 @@ namespace JsonToWord.Model
             {
                 foreach (WordListModel wlm in rootData.Root)
                 {
-                    clm.ContentsList.Add(wlm.Word);
+                    clm.ContentsList.Add(new StrWrapper(wlm.Word.StrData));
                 }
             }
             return clm;

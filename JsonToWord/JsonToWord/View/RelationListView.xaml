@@ -25,14 +25,16 @@
                 Command="{Binding SaveRelationCommand}" Margin="15,10,15,0" />
 
         <DataGrid Margin="10" Name="WordList" Width="auto" Height="auto" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-                  ItemsSource="{Binding VisiableList.List }" AutoGenerateColumns="False" CanUserSortColumns="False">
+                  ItemsSource="{Binding VisiableList.List}" AutoGenerateColumns="False" CanUserSortColumns="False">
+            
             <DataGrid.Columns>
-                <DataGridTextColumn Header="연관어" Width="250" Binding="{Binding Word, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
+                <DataGridTextColumn Header="연관어" Width="250" Binding="{Binding RelationWord, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
 
                 <DataGridTextColumn Header="사용횟수" Width="70" 
                                     Binding="{Binding Count, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
                                     />
             </DataGrid.Columns>
+            
         </DataGrid>
 
     </Grid>

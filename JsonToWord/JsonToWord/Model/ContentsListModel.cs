@@ -13,7 +13,11 @@ namespace JsonToWord.Model
         private ObservableCollection<StrWrapper> _contentsList;
         public ObservableCollection<StrWrapper> ContentsList
         {
-            get { return _contentsList; }
+            get 
+            {
+                _contentsList  =  _contentsList ?? new ObservableCollection<StrWrapper>();
+                return _contentsList; 
+            }
             set
             {
                 _contentsList = value;

@@ -10,7 +10,7 @@ namespace JsonToWord.Model
 {
     public class RelationWordModel : INotifyPropertyChanged
     {
-        private String _relationWord = "";
+        private String _relationWord ;
         private int _count = 1;
 
         public String RelationWord 

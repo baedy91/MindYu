@@ -4,10 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.ignore.com"
+        xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity" 
         mc:Ignorable="d ignore"
         Width="150" Height="540"
         DataContext="{Binding ContentsList, Source={StaticResource Locator}}">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -18,19 +18,33 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Border BorderBrush = "Aqua" BorderThickness="2" HorizontalAlignment="Left" Height="540" VerticalAlignment="Top" Width="150" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        
         <Button Name="newBtn" Grid.Row="0" Grid.Column="0" Width="50" Height="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="단어추가" FontSize="10"
-                Command="{Binding NewContentsMessageCommand}" Margin="13,10,12,0"/>
+                Command="{Binding NewContentsListCommand}" Margin="13,10,12,0"/>
         <Button Name="removeBtn" Grid.Row="0" Grid.Column="1" Width="50" Height="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="단어삭제" FontSize="10"
-                Command="{Binding RemoveContentsMessageCommand}" Margin="13,10,12,0"/>
+                Command="{Binding RemoveContentsListCommand}" Margin="13,10,12,0"/>
+        
         <DataGrid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Name="containWordList" Margin="10"
-                  SelectedIndex="{Binding SelectedIndex.StrData ,Mode=OneWayToSource}"
-                  ItemsSource="{Binding ContentsWordList.ContentList }"
+                  ItemsSource="{Binding ConList.ContentsList}"
+                  SelectedIndex="{Binding SelectedIndex.IntData}"                  
                   SelectedItem="{Binding ContentsListSelected.SelectedItem}"
                   AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn  Width="110" Header="단어 리스트" 
-                                     Binding="{Binding StrData  ,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"/>
+                <DataGridTextColumn Width="110" Header="단어 리스트" 
+                                     Binding="{Binding StrData,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"/>                
             </DataGrid.Columns>
+            <i:Interaction.Triggers>
+
+                <i:EventTrigger EventName="SelectedCellsChanged">
+                    <i:InvokeCommandAction Command="{Binding SelectedCommand}" CommandParameter="{Binding ContentsListSelected}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="CellEditEnding"><!-- 연관어 리스트 항목 수정시 적용  -->                    
+                    <i:InvokeCommandAction Command="{Binding UpdateListCommand}" CommandParameter="{Binding ConList}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="BeginningEdit">
+                    <i:InvokeCommandAction Command="{Binding ContentsListBeginEditCommand}" CommandParameter="{Binding ContentsListSelected.SelectedItem}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </DataGrid>
     </Grid>
 </UserControl>
