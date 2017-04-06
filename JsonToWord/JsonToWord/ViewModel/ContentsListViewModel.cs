@@ -22,6 +22,17 @@ namespace JsonToWord.ViewModel
         IDataService dataService = new DataService();
         bool NowStatusNCL;
         #region Property
+        private ListSortDirection _conListDirect;
+        public ListSortDirection ConListDirect
+        {
+            get { return _conListDirect; }
+            set
+            {
+                _conListDirect = value;
+                RaisePropertyChanged("ConListDirect");
+            }
+        }
+
         private RootAllModel _rootAll;
         public void SetRoot(RootAllModel root)
         {
@@ -98,12 +109,24 @@ namespace JsonToWord.ViewModel
         }
 
         #endregion
+
+        #region Method
+        private void RootUpdateCallback(RootAllModel root)
+        {
+            SetRoot(root);
+            ConList = dataService.GetContents(root);
+            OldCurrentList = CurrentListChange(root);
+
+        }
+        #endregion
+
         #region Command
         // ContentsList
         public ICommand SelectedCommand { get; private set; }                    // 선택 
         public ICommand UpdateListCommand { get; private set; }                 // 수정    
         public ICommand NewContentsListCommand { get; private set; }         // 추가
         public ICommand RemoveContentsListCommand { get; private set; }     // 삭제
+        public ICommand BeginUpdateContentCommand { get; private set; }
 
         private void SelectedChangeEvent(SelectedItemModel selected)
         {
@@ -145,17 +168,17 @@ namespace JsonToWord.ViewModel
                 NowStatusNCL = true;
             }
 
-
-            SelectedIndex = new IntWrapper(msg.index);
+            ContentsListSelected.SelectedItem = ConList.ContentsList[msg.index];
+            MessageBox.Show(msg.oldData + " -> " +  msg.updateData + " 으로 변경");
        //     ConList = dataservice.GetContents(_rootAll);    //갱신            
 
           //  Messenger.Default.Send
         }
-        private void RootUpdateCallback(RootAllModel root)
+        private void BeginUpdateEvent(ListSortDirection direct)
         {
-            ConList = dataService.GetContents(root);
-            OldCurrentList = CurrentListChange(root);
+            MessageBox.Show(direct.ToString());
         }
+
 
         private void NewContentsEvent()
         {
@@ -169,13 +192,13 @@ namespace JsonToWord.ViewModel
                     (new NotificationMessageAction<RootAllModel>("NewContent", RootUpdateCallback), "NewContent");
 
                 NowStatusNCL = false;
+                ContentsListSelected.SelectedItem = ConList.ContentsList[ConList.ContentsList.Count - 1];
             }
             else
             {
                 MessageBox.Show("이미 새항목이 존재합니다.\n단어이름을 수정해 주세요", "추가불가");
             }
         }
-
         private List<string> CurrentListChange(RootAllModel root)
         {
             var list = new List<string>();
@@ -185,27 +208,25 @@ namespace JsonToWord.ViewModel
             }
             return list;
         }
-
         private void RemoveContentsEvent()
         {
             int index = SelectedIndex.IntData;
             // removeResult re = dataService.RemoveContentsList(index);
             WordListModel removeItem = _rootAll.Root[index];
 
-            _rootAll.Root.RemoveAt(index);       // message
-
+            MessengerInstance.Send<NotificationMessageAction<RootAllModel>>
+                (new NotificationMessageAction<RootAllModel>(index, "Remove", RootUpdateCallback), "Remove");
+       
             if (removeItem.Word.StrData == "새항목")
             {
                 NowStatusNCL = true;
             }
-
-            ConList = dataService.GetContents(_rootAll);
+           
             if (ConList.ContentsList.Count > 0)
             {
                 ContentsListSelected.SelectedItem = ConList.ContentsList[0];
             }
         }
-
         private bool CanRemoveContentsEvent()
         {
             if (ConList.ContentsList.Count > 0)
@@ -217,6 +238,8 @@ namespace JsonToWord.ViewModel
                 return false;
             }
         }
+
+
         #endregion
 
         /// <summary>
@@ -244,17 +267,15 @@ namespace JsonToWord.ViewModel
             }
             OldCurrentList = CurrentListChange(_rootAll); 
 
-
-
             //messenger         
             MessengerInstance.Register<RootAllModel>(this, "save", SetRoot);
-
-
+            
             //Command
             SelectedCommand = new RelayCommand<SelectedItemModel>((x) => SelectedChangeEvent(x));
             UpdateListCommand = new RelayCommand<ContentsListModel>((x) => UpdateListEvent(x));
             NewContentsListCommand = new RelayCommand(() => NewContentsEvent());
             RemoveContentsListCommand = new RelayCommand(() => RemoveContentsEvent(), () => CanRemoveContentsEvent());
+            BeginUpdateContentCommand = new RelayCommand<ListSortDirection>((x) => BeginUpdateEvent(x));
         }
     }
 }

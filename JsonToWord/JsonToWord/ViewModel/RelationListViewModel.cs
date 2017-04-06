@@ -86,7 +86,6 @@ namespace JsonToWord.ViewModel
 
         #region Command
         public ICommand SaveRelationCommand { get; private set; }               // 저장 
-
         private void SaveRelationEvent()                        // RelationList
         {
             List<string> list = new List<string>();
@@ -125,11 +124,20 @@ namespace JsonToWord.ViewModel
             }
 
             dataService.SaveDataService(RootAll);
-            VisiableList = dataService.GetRelaionWord(RootAll, ContentsListSelected.SelectedItem.StrData);
+            if (ContentsListSelected.SelectedItem.StrData != null)
+            {
+                VisiableList = dataService.GetRelaionWord(RootAll, ContentsListSelected.SelectedItem.StrData);
+            }
+            else
+            {
+                VisiableList = null;
+            }
             MessengerInstance.Send<RootAllModel>(RootAll, "save");
+            MessageBox.Show("저장되었습니다.", "저장완료");
         }
-
-      private void SelectedEvent(SelectedItemModel selected)
+        #endregion
+        #region MessageEvent
+        private void SelectedEvent(SelectedItemModel selected)
         {
             ContentsListSelected.SelectedItem = selected.SelectedItem;
             try
@@ -146,20 +154,32 @@ namespace JsonToWord.ViewModel
         {
             RootAll.Root[msg.index].Word = new StrWrapper(msg.updateData);
             msg.Execute(RootAll);
+            VisiableList = dataService.GetRelaionWord(RootAll, msg.updateData);            
         }
 
         private void NewContents(NotificationMessageAction<RootAllModel> noti)
         {
             dataService.NewContentsList(RootAll);
+            
+            ContentsListSelected.SelectedItem.StrData = "새항목";
             noti.Execute(RootAll);
+            VisiableList = dataService.GetRelaionWord(RootAll, "새항목");
         }
 
-        private void RemoveContents()
+        private void RemoveContents(NotificationMessageAction<RootAllModel> noti)
         {
+            int index = (int)noti.Sender;
+            RootAll.Root.RemoveAt(index);
+            noti.Execute(RootAll);
+            ContentsListSelected.SelectedItem = new StrWrapper("");
 
+            if (RootAll.Root.Count == 0)
+            {
+                VisiableList = null;
+            }
         }
-        
         #endregion
+
 
         /// <summary>
         /// Initializes a new instance of the RelationListViewModel class.
@@ -169,15 +189,20 @@ namespace JsonToWord.ViewModel
         {
             RootAll = dataService.LoadDataService();
             ContentsListSelected = new SelectedItemModel();
-            ContentsListSelected.SelectedItem = RootAll.Root[0].Word;
-            VisiableList = dataService.GetRelaionWord(RootAll, dataService.GetContents(RootAll).ContentsList[0].StrData);
-
+            if (RootAll.Root.Count > 0)
+            {
+                ContentsListSelected.SelectedItem = RootAll.Root[0].Word;
+                VisiableList = dataService.GetRelaionWord(RootAll, dataService.GetContents(RootAll).ContentsList[0].StrData);
+            }else
+            {
+                ContentsListSelected.SelectedItem = new StrWrapper("");            
+            }
             //Messenger
             MessengerInstance.Register<PropertyChangedMessage<SelectedItemModel>>(this, "selectedInit", (x) => { ContentsListSelected = x.NewValue; });
             MessengerInstance.Register<SelectedItemModel>(this, "SelectedEvent", SelectedEvent);
             MessengerInstance.Register<UpdateMsg>(this, UpdateEvent);
             MessengerInstance.Register<NotificationMessageAction<RootAllModel>>(this, "NewContent", NewContents);
-
+            MessengerInstance.Register<NotificationMessageAction<RootAllModel>>(this, "Remove", RemoveContents);
 
             //Command
             SaveRelationCommand = new RelayCommand(() => SaveRelationEvent());
